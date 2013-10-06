@@ -1,5 +1,7 @@
 package com.github.markyc.applicationcenter;
 
+import java.util.Iterator;
+
 public class Postgrad extends Student {
 	
 	/* Valid undergradMajor values */
@@ -49,5 +51,25 @@ public class Postgrad extends Student {
 	 */
 	public void setUndergradAverage(double undergradAverage) {
 		this.undergradAverage = undergradAverage;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		String result = "Postgrad [" + "name=" + getName() + ", program=" + getProgram() + 
+				", undergradMajor=" + undergradMajor + ", undergradAverage=" + undergradAverage + ", universities=[";
+		
+		// Add universities in String format
+		Iterator<String> it = universities.keySet().iterator();
+		while (it.hasNext()) {
+			result += it.next();
+			if ( it.hasNext() ) result += ", ";
+		}
+		
+		result += "]]";
+		
+		return result;
 	}
 }

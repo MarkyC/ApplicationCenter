@@ -35,7 +35,7 @@ public class InputPanel extends JPanel implements CardPanel {
 	private static final String DEGREE 		= "Degree: ";
 	private static final String UNIVERSITY 	= "Universities: ";
 	private static final String SUBMIT 		= "Submit";
-	
+
 	private static final String STUDENTS_CREATED = " Students have been created";
 	
 	public static final String[] GRAD_TYPES = { 
@@ -56,6 +56,8 @@ public class InputPanel extends JPanel implements CardPanel {
 		"Macmaster"
 	};
 	
+	private List<Student> students;
+	
 	private static final int COMPONENT_HEIGHT 	= 30;
 	private static final int FIELD_WIDTH 		= 200;
 	private static final int LABEL_WIDTH 		= 100;
@@ -74,6 +76,7 @@ public class InputPanel extends JPanel implements CardPanel {
 		
 		/* Build panels, adding the JTextFields to the list of fields */
 		this.fields = new ArrayList<JComponent>();
+		this.students = new ArrayList<Student>();
 		this.contentPanel = this.createContentPanel();
 
 		/* Add a ScrollPane in case the view overflows */
@@ -101,7 +104,12 @@ public class InputPanel extends JPanel implements CardPanel {
 			if (c.getName() == AVG_MARK)
 				c.addKeyListener(new DigitDecimalListener());
 
-		/* Degree should not be a text field, it should be a JComboBox */
+		/* Degree should not be a text field, it should be a JComboBox
+		 * that can be edited like a JTextField. This is so the user
+		 * can specify a degree in error, and have a way to revert back
+		 * to the default "Undergrad" option, and we don't have to check
+		 * if they entered typos like "undergrad" or "ndergrad" themselves. 
+		 */
 		// panels.add( createTextPanel(DEGREE) );
 		panels.add( createDegreePanel(DEGREE) );
 		
@@ -119,7 +127,7 @@ public class InputPanel extends JPanel implements CardPanel {
 
 	private JPanel createSubmitPanel(String name) {
 		
-		JLabel label = new JLabel("0" + STUDENTS_CREATED);
+		JLabel label = new JLabel(this.students.size() + STUDENTS_CREATED);
 		label.setName(name);
 		label.setPreferredSize(new Dimension( LABEL_WIDTH + FIELD_WIDTH, COMPONENT_HEIGHT ));
 		label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -129,29 +137,9 @@ public class InputPanel extends JPanel implements CardPanel {
 		this.fields.add(label);
 		
 		JButton submit = new JButton(name);
-		submit.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				for (JComponent comp : InputPanel.this.fields) {
-					if (comp instanceof JTextField) {
-						JTextField f = (JTextField) comp;
-						System.out.println(f.getName() + ": " + f.getText());
-					} else if ( comp instanceof JList<?> ) {
-						JList<?> l = (JList<?>) comp;
-						System.out.println(l.getName() + ": " + l.getSelectedValuesList());
-					} else if ( comp instanceof JLabel ) {
-						JLabel l = (JLabel) comp;
-						System.out.println(l.getName() + ": " + l.getText());
-					}
-				}
-				
-			}
-			
-		});
+		submit.addActionListener(new SubmitListener());
 		
 		JPanel panel = new JPanel();
-		//panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setLayout(new GridLayout(2,1));
 		
 		panel.add( submit );
@@ -184,11 +172,11 @@ public class InputPanel extends JPanel implements CardPanel {
 		
 		// populate values and insert into combobox
 		String[] vals = { 
-			Undergrad.class.getSimpleName(), 
-			Postgrad.class.getSimpleName() 
+			Undergrad.class.getSimpleName()
 		};
 		JComboBox<String> box 	= new JComboBox<String>(vals);
 		box.setName(name);
+		box.setEditable(true);
 		box.setPreferredSize(new Dimension ( FIELD_WIDTH, COMPONENT_HEIGHT ));
 		
 		/* Add to list of fields we are watching */
@@ -317,5 +305,75 @@ public class InputPanel extends JPanel implements CardPanel {
 	        
 	        super.addSelectionInterval(index0, index1);
 	    }
+	}
+	
+	private class SubmitListener implements ActionListener {
+
+
+		
+		private String name;
+		private String program;
+		private double avgMark;
+		private String degree;
+		private List<String> universities;
+		private JLabel label;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			for (JComponent comp : InputPanel.this.fields) {
+				if (comp instanceof JTextField) {
+					
+					JTextField f = (JTextField) comp;
+					switch(f.getName()) {
+					
+					case NAME: 		name 	= f.getText(); break;
+					case PROGRAM: 	program = f.getText(); break;
+					case AVG_MARK: 	
+						try {
+							avgMark = Double.parseDouble(f.getText()); 
+							break;
+						} catch (Exception ex) {
+
+						}
+					
+					}
+					
+				} else if (comp instanceof JComboBox<?>) {
+					
+					@SuppressWarnings("unchecked")
+					JComboBox<String> box = (JComboBox<String>) comp;
+					degree 	= (String) box.getSelectedItem();
+					
+				} else if ( comp instanceof JList<?> ) {
+					
+					@SuppressWarnings("unchecked")
+					JList<String> l = (JList<String>) comp;
+					universities = l.getSelectedValuesList();
+					
+				} else if ( comp instanceof JLabel ) {
+					
+					label = (JLabel) comp;
+				}
+			}
+			
+			// Create student based on provided info
+			Student s;
+			if ( Undergrad.class.getSimpleName().equals(degree) ) {
+				s= new Undergrad(name, program, avgMark);
+			} else {
+				s = new Postgrad(name, program, degree, avgMark);
+			}
+			
+			// add selected universities
+			for (String uni : universities)
+				s.addUniversity(uni);
+			
+			// add to list
+			InputPanel.this.students.add(s);
+			
+			// update label to reflect the new student
+			label.setText(InputPanel.this.students.size() + STUDENTS_CREATED);
+		}
+		
 	}
 }

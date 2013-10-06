@@ -1,6 +1,7 @@
 package com.github.markyc.applicationcenter;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class Student {
@@ -9,7 +10,7 @@ public class Student {
 	private String program;
 	
 	// This maps a University Name to whether the Student has been accepted.
-	private Map<String, Boolean> universities;
+	protected Map<String, Boolean> universities;
 	
 	public Student() {
 		// empty name and program
@@ -77,6 +78,26 @@ public class Student {
 	 */
 	public void setProgram(String program) {
 		this.program = program;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		String result =  "Student [name=" + name + ", program=" + program
+				+ ", universities=[";
+		
+		// Add universities in String format
+		Iterator<String> it = universities.keySet().iterator();
+		while (it.hasNext()) {
+			result += it.next();
+			if ( it.hasNext() ) result += ", ";
+		}
+		
+		result += "]]";
+		
+		return result;
 	}
 
 	
