@@ -21,6 +21,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class InputPanel extends JPanel implements CardPanel {
 
@@ -121,6 +122,8 @@ public class InputPanel extends JPanel implements CardPanel {
 		JLabel label = new JLabel("0" + STUDENTS_CREATED);
 		label.setName(name);
 		label.setPreferredSize(new Dimension( LABEL_WIDTH + FIELD_WIDTH, COMPONENT_HEIGHT ));
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+
 		
 		/* this label must also be updated when clicking submit */
 		this.fields.add(label);

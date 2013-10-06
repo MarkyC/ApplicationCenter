@@ -10,6 +10,11 @@ public class Student {
 	
 	// This maps a University Name to whether the Student has been accepted.
 	private Map<String, Boolean> universities;
+	
+	public Student() {
+		// empty name and program
+		this("", "");
+	}
 
 	public Student(String name, String program) {
 		
@@ -30,6 +35,20 @@ public class Student {
 		
 		this.universities.remove(name);
 		
+	}
+	
+	/**
+	 * @return the universities
+	 */
+	public Map<String, Boolean> getUniversities() {
+		return universities;
+	}
+
+	/**
+	 * @param universities the universities to set
+	 */
+	public void setUniversities(Map<String, Boolean> universities) {
+		this.universities = universities;
 	}
 
 	/**

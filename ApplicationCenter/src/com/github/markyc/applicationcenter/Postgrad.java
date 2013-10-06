@@ -8,6 +8,13 @@ public class Postgrad extends Student {
 	
 	private String undergradMajor;
 	private double undergradAverage;
+	
+	public Postgrad(Student student, String undergradMajor, double undergradAverage) {
+		
+		// create from an existing Student
+		this( student.getName(), student.getProgram(), undergradMajor, undergradAverage );
+		this.setUniversities( student.getUniversities() );
+	}
 
 	public Postgrad(String name, String program, String undergradMajor, double undergradAverage) {
 		super(name, program);
