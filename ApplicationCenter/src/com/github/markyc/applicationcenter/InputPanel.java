@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -63,6 +64,9 @@ public class InputPanel extends JPanel implements CardPanel {
 
 	private JPanel contentPanel;
 
+	/**
+	 * This is used to grab the values from all the fields we wish to save when the user clicks submit
+	 */
 	private List<JComponent> fields;
 	
 	public InputPanel() {
@@ -154,35 +158,10 @@ public class InputPanel extends JPanel implements CardPanel {
 	}
 
 	private JPanel createListPanel(String name, String[] listValues) {
-		final JList<String> list = new JList<String>(listValues);
-		list.setName(name);
-		list.setVisibleRowCount(6);
-		/*list.addListSelectionListener(new ListSelectionListener() {
-			
-			Set<Integer> selections = new LinkedHashSet<Integer>();
-
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				for (int i = e.getFirstIndex(); i < e.getLastIndex(); i++) {
-					selections.add(i);
-				}
-				
-				// User has selected too many universities
-				if ( (selections.size() > 3) && !e.getValueIsAdjusting() ) {
-				
-					// Only the first 3 indices of the set will get added
-					Integer[] vals = new Integer[selections.size()];
-					vals = selections.toArray(vals);
-					int[] indices = {vals[0], vals[1], vals[2]};
-					list.setSelectedIndices(indices);
-					
-					// show tooltip
-					list.setToolTipText("Only 3 universities may be chosen");
-				}
-				
-			}
-			
-		});*/
+		final JList<String> list = new JList<String>( listValues );
+		list.setName( name );
+		list.setVisibleRowCount( 6 );
+		list.setSelectionModel(new MaxIndexSelectionModel( list, 3 ));
 		
 		/* Add to list of fields we are watching */
 		this.fields.add(list);
@@ -250,7 +229,7 @@ public class InputPanel extends JPanel implements CardPanel {
 		return CARD_NAME;
 	}
 
-	final class DigitDecimalListener implements KeyListener {
+	final static class DigitDecimalListener implements KeyListener {
 
 		@Override
 		public void keyTyped(KeyEvent e) {
@@ -284,5 +263,56 @@ public class InputPanel extends JPanel implements CardPanel {
 
 		@Override public void keyPressed(KeyEvent e) { }
 		@Override public void keyReleased(KeyEvent e) { }
+	}
+	
+	final static class MaxIndexSelectionModel extends DefaultListSelectionModel
+	{
+		
+		private static final long serialVersionUID = -3856631894669326784L;
+		private JList<?> list;
+	    private int maxCount;
+
+	    private MaxIndexSelectionModel(JList<?> list, int maxCount) {
+	        this.list = list;
+	        this.maxCount = maxCount;
+	    }
+
+	    @Override
+	    public void setSelectionInterval(int index0, int index1) {
+	    	
+	        // if the user selects the index backwards, lets run this method with the args switched
+	        if (index1 < index0) {
+	            setSelectionInterval(index1, index0);
+	        	return;
+	        }
+	    	
+	    	// limit selections to maxCount
+	        if (index1 - index0 >= maxCount) {
+	            index1 = index0 + maxCount - 1;
+	        }
+	        super.setSelectionInterval(index0, index1);
+	    }
+
+	    @Override
+	    public void addSelectionInterval(int index0, int index1)
+	    {
+	        // if the user selects the index backwards, lets run this method with the args switched
+	        if (index1 < index0) {
+	            addSelectionInterval(index1, index0);
+	        	return;
+	        }
+	    	
+	        int selectionLength = list.getSelectedIndices().length;
+	        
+	        // Don't select if greater than maxCount values are selected
+	        if (selectionLength >= maxCount)
+	            return;
+
+	        if (index1 - index0 >= maxCount - selectionLength) {
+	            index1 = index0 + maxCount - 1 - selectionLength;
+	        }
+	        
+	        super.addSelectionInterval(index0, index1);
+	    }
 	}
 }
