@@ -5,12 +5,15 @@ package com.github.markyc.applicationcenter;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.HeadlessException;
+import java.util.List;
 
 import javax.swing.JApplet;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-public class ApplicationCenter extends JApplet {
+public class ApplicationCenter extends JApplet implements ChangeListener{
 
 	/**
 	 * 
@@ -18,6 +21,10 @@ public class ApplicationCenter extends JApplet {
 	private static final long serialVersionUID = -7447217375705120304L;
 	private NavigationPanel navPanel;
 	private JPanel contentPanel;
+	private AdmitPanel admitPanel;
+	private InputPanel inputPanel;
+	
+	//public List<Student> students;
 
 	public ApplicationCenter() throws HeadlessException {
 		super();
@@ -42,12 +49,26 @@ public class ApplicationCenter extends JApplet {
 
 	private JPanel buildContentPanel() {
 		JPanel cards = new JPanel( new CardLayout() );
-        cards.add(new InputPanel(), InputPanel.CARD_NAME );
-        cards.add(new AdmitPanel(), AdmitPanel.CARD_NAME );
-        cards.add(new DisplayPanel(), DisplayPanel.CARD_NAME );
-        cards.add(new DisplayAllPanel(), DisplayAllPanel.CARD_NAME );
+		
+		this.inputPanel = new InputPanel();
+		this.inputPanel.addListener(this);
+		this.admitPanel = new AdmitPanel();
+		
+        cards.add( this.inputPanel, 		InputPanel.CARD_NAME );
+        cards.add( this.admitPanel, 		AdmitPanel.CARD_NAME );
+        cards.add( new DisplayPanel(), 		DisplayPanel.CARD_NAME );
+        cards.add( new DisplayAllPanel(),	DisplayAllPanel.CARD_NAME );
 
         return cards;
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		
+		if ( e.getSource() instanceof InputPanel ) {
+			this.admitPanel.setStudents(((InputPanel) e.getSource()).getStudents());
+		}
+		
 	}
 
 }

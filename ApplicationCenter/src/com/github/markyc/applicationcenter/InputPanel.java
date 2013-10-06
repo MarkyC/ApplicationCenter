@@ -22,6 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class InputPanel extends JPanel implements CardPanel {
 
@@ -56,7 +58,6 @@ public class InputPanel extends JPanel implements CardPanel {
 		"Macmaster"
 	};
 	
-	private List<Student> students;
 	
 	private static final int COMPONENT_HEIGHT 	= 30;
 	private static final int FIELD_WIDTH 		= 200;
@@ -64,19 +65,23 @@ public class InputPanel extends JPanel implements CardPanel {
 	
 	private static final long serialVersionUID = 8563373557574559578L;
 
-
 	private JPanel contentPanel;
 
-	/**
-	 * This is used to grab the values from all the fields we wish to save when the user clicks submit
-	 */
+	/** Holds all the students */
+	private List<Student> students;
+	/**  This is used to grab the values from all the fields we wish to save when the user clicks submit */
 	private List<JComponent> fields;
+	/** Holds listeners that are added to the class */
+	private List<ChangeListener> listeners;
 	
 	public InputPanel() {
+		
+		super();
 		
 		/* Build panels, adding the JTextFields to the list of fields */
 		this.fields = new ArrayList<JComponent>();
 		this.students = new ArrayList<Student>();
+		this.listeners = new ArrayList<ChangeListener>();
 		this.contentPanel = this.createContentPanel();
 
 		/* Add a ScrollPane in case the view overflows */
@@ -371,11 +376,28 @@ public class InputPanel extends JPanel implements CardPanel {
 				s.addUniversity(uni);
 			
 			// add to list
-			InputPanel.this.students.add(s);
+			addStudent(s);
 			
 			// update label to reflect the new student
 			label.setText(InputPanel.this.students.size() + STUDENTS_CREATED);
 		}
 		
+	}
+
+	public void addStudent(Student s) {
+		this.students.add(s);
+		
+		for (ChangeListener l : this.listeners) {
+			l.stateChanged(new ChangeEvent(this));
+		}
+	}
+	
+	public InputPanel addListener(ChangeListener c) {
+		this.listeners.add(c);
+		return this;
+	}
+	
+	public List<Student> getStudents() {
+		return this.students;
 	}
 }
