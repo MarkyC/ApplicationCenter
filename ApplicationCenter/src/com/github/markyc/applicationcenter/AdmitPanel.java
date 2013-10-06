@@ -3,7 +3,7 @@ package com.github.markyc.applicationcenter;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class AdmitPanel extends JPanel {
+public class AdmitPanel extends JPanel implements CardPanel {
 
 	/**
 	 * 
@@ -14,5 +14,10 @@ public class AdmitPanel extends JPanel {
 	public AdmitPanel() {
 		JLabel label = new JLabel(AdmitPanel.class.getSimpleName());
 		this.add(label);
+	}
+
+	@Override
+	public String getCardName() {
+		return CARD_NAME;
 	}
 }

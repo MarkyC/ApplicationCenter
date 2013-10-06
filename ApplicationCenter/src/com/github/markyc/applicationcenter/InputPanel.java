@@ -320,6 +320,8 @@ public class InputPanel extends JPanel implements CardPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			
+			// iterate over fields to get the user inputted data
 			for (JComponent comp : InputPanel.this.fields) {
 				if (comp instanceof JTextField) {
 					
@@ -359,7 +361,7 @@ public class InputPanel extends JPanel implements CardPanel {
 			// Create student based on provided info
 			Student s;
 			if ( Undergrad.class.getSimpleName().equals(degree) ) {
-				s= new Undergrad(name, program, avgMark);
+				s = new Undergrad(name, program, avgMark);
 			} else {
 				s = new Postgrad(name, program, degree, avgMark);
 			}
