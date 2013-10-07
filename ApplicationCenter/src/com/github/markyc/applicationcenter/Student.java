@@ -3,6 +3,7 @@ package com.github.markyc.applicationcenter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Student {
 
@@ -28,7 +29,13 @@ public class Student {
 	public void addUniversity(String name) {
 		
 		// When a university is added, the user is not initially accepted to it.
-		this.universities.put( name, false );
+		this.addUniversity(name, false);
+		
+	}
+	
+	public void addUniversity(String name, boolean isAccepted) {
+		
+		this.universities.put( name, isAccepted );
 		
 	}
 	
@@ -89,16 +96,16 @@ public class Student {
 				+ ", universities=[";
 		
 		// Add universities in String format
-		Iterator<String> it = universities.keySet().iterator();
+		Iterator<Entry<String, Boolean>> it = this.universities.entrySet().iterator();
 		while (it.hasNext()) {
-			result += it.next();
+			
+			Entry<String, Boolean> entry = it.next();
+			result += entry.getKey() + ": " + (entry.getValue() ? "accepted" : "rejected");
 			if ( it.hasNext() ) result += ", ";
 		}
 		
 		result += "]]";
 		
 		return result;
-	}
-
-	
+	}	
 }

@@ -5,7 +5,6 @@ package com.github.markyc.applicationcenter;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.HeadlessException;
-import java.util.List;
 
 import javax.swing.JApplet;
 import javax.swing.JPanel;

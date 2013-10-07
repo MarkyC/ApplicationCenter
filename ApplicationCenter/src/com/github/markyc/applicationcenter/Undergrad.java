@@ -1,6 +1,7 @@
 package com.github.markyc.applicationcenter;
 
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 public class Undergrad extends Student {
 
@@ -42,9 +43,11 @@ public class Undergrad extends Student {
 				", highSchoolAverage=" + highSchoolAverage + ", universities=[";
 		
 		// Add universities in String format
-		Iterator<String> it = universities.keySet().iterator();
+		Iterator<Entry<String, Boolean>> it = this.universities.entrySet().iterator();
 		while (it.hasNext()) {
-			result += it.next();
+			
+			Entry<String, Boolean> entry = it.next();
+			result += entry.getKey() + ": " + (entry.getValue() ? "accepted" : "rejected");
 			if ( it.hasNext() ) result += ", ";
 		}
 		
