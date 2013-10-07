@@ -26,6 +26,10 @@ public class Student {
 		this.universities = new HashMap<String, Boolean>();
 	}
 	
+	public boolean hasUniversity(String name) {
+		return this.universities.containsKey(name);
+	}
+	
 	public void addUniversity(String name) {
 		
 		// When a university is added, the user is not initially accepted to it.

@@ -6,10 +6,10 @@ import java.util.Map.Entry;
 public class Postgrad extends Student {
 	
 	/* Valid undergradMajor values */
-	public static final String MASTER = "master";
-	public static final String PHD = "phd";
+	public static final String MASTER = "Master";
+	public static final String PHD = "PHD";
 	
-	private String undergradMajor;
+	private String degree;
 	private double undergradAverage;
 	
 	public Postgrad(Student student, String undergradMajor, double undergradAverage) {
@@ -19,27 +19,22 @@ public class Postgrad extends Student {
 		this.setUniversities( student.getUniversities() );
 	}
 
-	public Postgrad(String name, String program, String undergradMajor, double undergradAverage) {
+	public Postgrad(String name, String program, String degree, double undergradAverage) {
 		super(name, program);
 
-		this.undergradMajor = undergradMajor;
+		this.degree = degree;
 		this.undergradAverage = undergradAverage;
 	}
-
-	/**
-	 * @return the undergradMajor
-	 */
-	public String getUndergradMajor() {
-		return undergradMajor;
+	
+	@Override
+	public void addUniversity(String name) {
+		if (PHD.equals( this.degree ))
+			this.addUniversity(name, undergradAverage >= 80);
+		else if (MASTER.equals( this.degree )) {
+			this.addUniversity(name, undergradAverage >= 70);
+		}
 	}
-
-	/**
-	 * @param undergradMajor the undergradMajor to set
-	 */
-	public void setUndergradMajor(String undergradMajor) {
-		this.undergradMajor = undergradMajor;
-	}
-
+	
 	/**
 	 * @return the undergradAverage
 	 */
@@ -60,7 +55,7 @@ public class Postgrad extends Student {
 	@Override
 	public String toString() {
 		String result = "Postgrad [" + "name=" + getName() + ", program=" + getProgram() + 
-				", undergradMajor=" + undergradMajor + ", undergradAverage=" + undergradAverage + ", universities=[";
+				", degree=" + degree + ", undergradAverage=" + undergradAverage + ", universities=[";
 		
 		// Add universities in String format
 		Iterator<Entry<String, Boolean>> it = this.universities.entrySet().iterator();

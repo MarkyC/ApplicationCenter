@@ -42,7 +42,8 @@ public class InputPanel extends JPanel implements CardPanel {
 	
 	public static final String[] GRAD_TYPES = { 
 		Undergrad.class.getSimpleName(), 
-		Postgrad.class.getSimpleName() 
+		Postgrad.MASTER,
+		Postgrad.PHD
 	};
 	
 	public static final String[] UNIVERSITIES = { 
@@ -175,11 +176,7 @@ public class InputPanel extends JPanel implements CardPanel {
 
 	private JPanel createDegreePanel(String name) {
 		
-		// populate values and insert into combobox
-		String[] vals = { 
-			Undergrad.class.getSimpleName()
-		};
-		JComboBox<String> box 	= new JComboBox<String>(vals);
+		JComboBox<String> box 	= new JComboBox<String>(GRAD_TYPES);
 		box.setName(name);
 		box.setEditable(true);
 		box.setPreferredSize(new Dimension ( FIELD_WIDTH, COMPONENT_HEIGHT ));
@@ -373,10 +370,13 @@ public class InputPanel extends JPanel implements CardPanel {
 			
 			// add selected universities
 			for (String uni : universities)
-				s.addUniversity(uni);
+				if ( !s.hasUniversity(uni) ) s.addUniversity(uni);
+				else {
+					
+				}
 			
 			// add to list
-			addStudent(s);
+			InputPanel.this.addStudent(s);
 			
 			// update label to reflect the new student
 			label.setText(InputPanel.this.students.size() + STUDENTS_CREATED);
