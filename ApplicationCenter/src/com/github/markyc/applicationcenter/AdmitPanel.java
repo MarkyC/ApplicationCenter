@@ -39,6 +39,8 @@ public class AdmitPanel extends JPanel implements CardPanel {
 	
 	private static final String ACCEPT = "Accept";
 	private static final String REJECT = "Reject";
+	
+	private static final String SUBMIT = "Submit";
 
 	
 	/* Combo box index is students index + 1 
@@ -176,7 +178,7 @@ public class AdmitPanel extends JPanel implements CardPanel {
 		}
 		
 		/* submit button */
-		JButton submit = new JButton("Submit");
+		JButton submit = new JButton( SUBMIT );
 		submit.addActionListener(new ActionListener() {
 
 			@Override

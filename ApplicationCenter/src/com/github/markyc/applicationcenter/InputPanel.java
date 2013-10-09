@@ -40,6 +40,12 @@ public class InputPanel extends JPanel implements CardPanel {
 
 	private static final String STUDENTS_CREATED = " Students have been created";
 	
+	/* Errors */
+	private static final String NO_NAME = "Your name cannot be empty";
+	private static final String NO_PROGRAM = "Your program cannot be empty";
+	private static final String AVERAGE_ERROR = "Your average mark must be a number greater than 0";
+	private static final String NO_UNIVERSITIES = "You have not selected any universities to apply to.";
+	
 	public static final String[] GRAD_TYPES = { 
 		Undergrad.class.getSimpleName(), 
 		Postgrad.MASTER,
@@ -340,8 +346,6 @@ public class InputPanel extends JPanel implements CardPanel {
 	
 	private class SubmitListener implements ActionListener {
 
-
-		
 		private String name;
 		private String program;
 		private double avgMark;
@@ -365,7 +369,7 @@ public class InputPanel extends JPanel implements CardPanel {
 						name 	= f.getText(); 
 						
 						if ( "".equals(name) ) {
-							new ErrorDialog("Your name cannot be empty");
+							new ErrorDialog( NO_NAME );
 							return;
 						}
 						
@@ -375,7 +379,7 @@ public class InputPanel extends JPanel implements CardPanel {
 						program = f.getText();
 						
 						if ( "".equals(program) ) {
-							new ErrorDialog("Your program cannot be empty");
+							new ErrorDialog( NO_PROGRAM );
 							return;
 						}
 						
@@ -388,7 +392,7 @@ public class InputPanel extends JPanel implements CardPanel {
 							if ( avgMark <= 0 ) throw new IllegalArgumentException();
 							break;
 						} catch (Exception ex) {
-							new ErrorDialog("Your average mark must be a number greater than 0");
+							new ErrorDialog( AVERAGE_ERROR );
 							return;
 						}
 					
@@ -410,7 +414,7 @@ public class InputPanel extends JPanel implements CardPanel {
 					
 					if ( universities.size() < 1 ) {
 					// Student has not selected any universities
-						new ErrorDialog("You have not selected any universities to apply to.");
+						new ErrorDialog( NO_UNIVERSITIES );
 						return;
 					}
 					

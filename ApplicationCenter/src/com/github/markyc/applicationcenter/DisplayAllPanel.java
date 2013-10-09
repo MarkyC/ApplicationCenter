@@ -10,6 +10,7 @@ import javax.swing.JTextArea;
 
 public class DisplayAllPanel extends JPanel implements CardPanel {
 
+	private static final String NO_STUDENTS = "No Students currently in the database.";
 	/**
 	 * 
 	 */
@@ -23,7 +24,7 @@ public class DisplayAllPanel extends JPanel implements CardPanel {
 		
 		// the only field in this window displays the toString() of all Students
 		// it is populated via the setStudents() method
-		this.field = new JTextArea("No Students currently in the database.");
+		this.field = new JTextArea( NO_STUDENTS );
 		this.field.setEditable( false );
 		this.field.setFont(new Font( "Serif", Font.ITALIC, 12 )); // 12pt Serif Font in italic
 		

@@ -19,9 +19,7 @@ public class DisplayPanel extends JPanel implements CardPanel {
 	private static final long serialVersionUID = -5548765433681976361L;
 	public static final String CARD_NAME = "displaypanel";
 	
-	//private static final String SELECT_STUDENT 		= "Please select a student to view their admission status";
 	private static final String SELECT_STUDENT_LIST = "Select a student by typing their name above";
-	//private static final String[] NO_STUDENTS 		= { "There are no students currently in the database" };
 	
 	private JTextField searchField;
 	private JTextArea area;
@@ -35,10 +33,12 @@ public class DisplayPanel extends JPanel implements CardPanel {
 		// the first field in this window is a combo box containing the names of all Students
 		this.searchField = new JTextField();
 		this.searchField.addActionListener(new ActionListener() {
-
+		// Handle searches
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String name = ((JTextField) e.getSource()).getText(); 
+				
+				if ( "".equals(name) ) return;	// Don't search for empty Student name
 				
 				// attempt to show the student, showing an empty ("please select a student...") panel on error
 				for (Student s : DisplayPanel.this.students)
@@ -52,6 +52,8 @@ public class DisplayPanel extends JPanel implements CardPanel {
 			}
 			
 		});
+		
+		
 		
 		// the other field in this window displays the toString() of the selected Student
 		this.area = new JTextArea( SELECT_STUDENT_LIST );
@@ -75,18 +77,6 @@ public class DisplayPanel extends JPanel implements CardPanel {
 	public void setStudents(List<Student> students) {
 		
 		this.students = students;
-		
-		// Create text out of Students in the List
-		/*String[] names = new String[students.size() + 1];
-		names[0] = SELECT_STUDENT;
-		for (int i = 1; i < names.length; i++) names[i] = students.get( i - 1 ).getName();
-		
-		// Set the text of the field to the Students from the List
-		this.comboBox.setModel(new DefaultComboBoxModel<String>(names));*/
-		
-		// Call for redraw
-		//this.revalidate();
-		//this.repaint(); 
 	}
 
 }
