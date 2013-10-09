@@ -178,7 +178,7 @@ public class InputPanel extends JPanel implements CardPanel {
 		
 		JComboBox<String> box 	= new JComboBox<String>(GRAD_TYPES);
 		box.setName(name);
-		box.setEditable(true);
+		//box.setEditable(true);
 		box.setPreferredSize(new Dimension ( FIELD_WIDTH, COMPONENT_HEIGHT ));
 		
 		/* Add to list of fields we are watching */
@@ -221,6 +221,35 @@ public class InputPanel extends JPanel implements CardPanel {
 	public String getCardName() {
 		return CARD_NAME;
 	}
+	
+	public void addStudent(Student student) throws IllegalArgumentException {
+		
+		// Student names must be unique. This is because of a bug in JComboBox where
+		// getSelectedIndex() returns the first index that contains the name of
+		// the selected item: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4133743
+		// I don't agree with this, because it forces all items in JComboBox to
+		// be unique, but c'est la vie.
+		for ( Student s : this.students ) 
+			if ( s.getName().equals( student.getName() ) )
+				throw new IllegalArgumentException("There is already a student with this name in the system.");
+
+
+		this.students.add(student);
+		
+		for (ChangeListener l : this.listeners) {
+			l.stateChanged(new ChangeEvent(this));
+		}
+	}
+	
+	public void addListener(ChangeListener c) {
+		this.listeners.add(c);
+	}
+	
+	public List<Student> getStudents() {
+		return this.students;
+	}
+	
+	public void setStudents(List<Student> students) {/* We don't set the Students of the InputPanel */}
 
 	final static class DigitDecimalListener implements KeyListener {
 
@@ -325,36 +354,68 @@ public class InputPanel extends JPanel implements CardPanel {
 			
 			// iterate over fields to get the user inputted data
 			for (JComponent comp : InputPanel.this.fields) {
+				
 				if (comp instanceof JTextField) {
+				// Name, program, marks of the Student
 					
 					JTextField f = (JTextField) comp;
 					switch(f.getName()) {
 					
-					case NAME: 		name 	= f.getText(); break;
-					case PROGRAM: 	program = f.getText(); break;
+					case NAME: 		
+						name 	= f.getText(); 
+						
+						if ( "".equals(name) ) {
+							new ErrorDialog("Your name cannot be empty");
+							return;
+						}
+						
+						break;
+						
+					case PROGRAM: 	
+						program = f.getText();
+						
+						if ( "".equals(program) ) {
+							new ErrorDialog("Your program cannot be empty");
+							return;
+						}
+						
+						
+						break;
+						
 					case AVG_MARK: 	
 						try {
 							avgMark = Double.parseDouble(f.getText()); 
+							if ( avgMark <= 0 ) throw new IllegalArgumentException();
 							break;
 						} catch (Exception ex) {
-
+							new ErrorDialog("Your average mark must be a number greater than 0");
+							return;
 						}
 					
 					}
 					
 				} else if (comp instanceof JComboBox<?>) {
+				// Degree the Student is obtaining
 					
 					@SuppressWarnings("unchecked")
 					JComboBox<String> box = (JComboBox<String>) comp;
 					degree 	= (String) box.getSelectedItem();
 					
 				} else if ( comp instanceof JList<?> ) {
+				// Student university selection	
 					
 					@SuppressWarnings("unchecked")
 					JList<String> l = (JList<String>) comp;
 					universities = l.getSelectedValuesList();
 					
+					if ( universities.size() < 1 ) {
+					// Student has not selected any universities
+						new ErrorDialog("You have not selected any universities to apply to.");
+						return;
+					}
+					
 				} else if ( comp instanceof JLabel ) {
+				// Updates the amount of Students in the List
 					
 					label = (JLabel) comp;
 				}
@@ -371,33 +432,18 @@ public class InputPanel extends JPanel implements CardPanel {
 			// add selected universities
 			for (String uni : universities)
 				if ( !s.hasUniversity(uni) ) s.addUniversity(uni);
-				else {
-					
-				}
 			
 			// add to list
-			InputPanel.this.addStudent(s);
+			try {
+				InputPanel.this.addStudent(s);
+			} catch (IllegalArgumentException ex) {
+				new ErrorDialog(ex.getMessage());
+				return;
+			}
 			
 			// update label to reflect the new student
 			label.setText(InputPanel.this.students.size() + STUDENTS_CREATED);
 		}
-		
-	}
-
-	public void addStudent(Student s) {
-		this.students.add(s);
-		
-		for (ChangeListener l : this.listeners) {
-			l.stateChanged(new ChangeEvent(this));
-		}
-	}
-	
-	public InputPanel addListener(ChangeListener c) {
-		this.listeners.add(c);
-		return this;
-	}
-	
-	public List<Student> getStudents() {
-		return this.students;
+				
 	}
 }

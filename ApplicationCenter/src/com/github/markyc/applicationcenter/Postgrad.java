@@ -36,6 +36,20 @@ public class Postgrad extends Student {
 	}
 	
 	/**
+	 * @return the degree
+	 */
+	public String getDegree() {
+		return degree;
+	}
+
+	/**
+	 * @param degree the degree to set
+	 */
+	public void setDegree(String degree) {
+		this.degree = degree;
+	}
+
+	/**
 	 * @return the undergradAverage
 	 */
 	public double getUndergradAverage() {

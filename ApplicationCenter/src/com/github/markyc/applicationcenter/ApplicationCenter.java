@@ -5,6 +5,7 @@ package com.github.markyc.applicationcenter;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.HeadlessException;
+import java.util.List;
 
 import javax.swing.JApplet;
 import javax.swing.JPanel;
@@ -20,8 +21,14 @@ public class ApplicationCenter extends JApplet implements ChangeListener{
 	private static final long serialVersionUID = -7447217375705120304L;
 	private NavigationPanel navPanel;
 	private JPanel contentPanel;
-	private AdmitPanel admitPanel;
+	
+	/* The input panel is where Students are created */
 	private InputPanel inputPanel;
+	
+	/* Panels we are in charge of updating */
+	private AdmitPanel admitPanel;
+	private DisplayAllPanel displayAllPanel;
+	private DisplayPanel displayPanel;
 	
 	//public List<Student> students;
 
@@ -49,14 +56,19 @@ public class ApplicationCenter extends JApplet implements ChangeListener{
 	private JPanel buildContentPanel() {
 		JPanel cards = new JPanel( new CardLayout() );
 		
-		this.inputPanel = new InputPanel();
-		this.inputPanel.addListener(this);
-		this.admitPanel = new AdmitPanel();
+		this.inputPanel 		= new InputPanel();
+		this.inputPanel.addListener( this );
+		
+		this.admitPanel 		= new AdmitPanel();
+		this.admitPanel.addListener( this );
+		
+		this.displayPanel		= new DisplayPanel();
+		this.displayAllPanel	= new DisplayAllPanel();
 		
         cards.add( this.inputPanel, 		InputPanel.CARD_NAME );
         cards.add( this.admitPanel, 		AdmitPanel.CARD_NAME );
-        cards.add( new DisplayPanel(), 		DisplayPanel.CARD_NAME );
-        cards.add( new DisplayAllPanel(),	DisplayAllPanel.CARD_NAME );
+        cards.add( this.displayPanel, 		DisplayPanel.CARD_NAME );
+        cards.add( this.displayAllPanel,	DisplayAllPanel.CARD_NAME );
 
         return cards;
 	}
@@ -65,7 +77,23 @@ public class ApplicationCenter extends JApplet implements ChangeListener{
 	public void stateChanged(ChangeEvent e) {
 		
 		if ( e.getSource() instanceof InputPanel ) {
-			this.admitPanel.setStudents(((InputPanel) e.getSource()).getStudents());
+			
+			List<Student> students = ((InputPanel) e.getSource()).getStudents();
+			
+			// I really want to make these Objects implement a SetStudent interface, 
+			// but interfaces must be in their own file
+			
+			this.admitPanel.setStudents(students);
+			this.displayPanel.setStudents(students);
+			this.displayAllPanel.setStudents(students);
+			
+		} else if ( e.getSource() instanceof AdmitPanel ) {
+			
+			List<Student> students = ((AdmitPanel) e.getSource()).getStudents();
+			
+			this.displayPanel.setStudents(students);
+			this.displayAllPanel.setStudents(students);
+
 		}
 		
 	}

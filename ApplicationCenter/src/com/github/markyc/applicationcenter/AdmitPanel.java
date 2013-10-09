@@ -22,6 +22,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class AdmitPanel extends JPanel implements CardPanel {
 
@@ -49,12 +51,15 @@ public class AdmitPanel extends JPanel implements CardPanel {
 	Map<ButtonGroup, String> fields;
 	private Student currentStudent;
 	
+	private List<ChangeListener> listeners;
+	
 
 	public AdmitPanel() {
 		super();
 		
 		this.students 	= new ArrayList<Student>();
 		this.fields 	= new HashMap<ButtonGroup, String>();
+		this.listeners	= new ArrayList<ChangeListener>();
 		
 		this.comboBox 	= new JComboBox<String>(NO_STUDENTS);
 		this.comboBox.addActionListener(new ActionListener() {
@@ -66,7 +71,7 @@ public class AdmitPanel extends JPanel implements CardPanel {
 				// attempt to show the student, showing an empty ("please select a student...") panel on error
 				try {
 					AdmitPanel.this.showStudent(students.get( box.getSelectedIndex() - 1 ));
-				} catch (ArrayIndexOutOfBoundsException ex) {
+				} catch (Exception ex) {
 					AdmitPanel.this.createEmptyInfoPanel();
 				}
 				
@@ -118,7 +123,10 @@ public class AdmitPanel extends JPanel implements CardPanel {
 		nameLabel.setFont( nameLabel.getFont().deriveFont(24f) );
 
 		// Shows whether the Student is an Undergrad or Postgrad
-		JLabel gradLabel = new JLabel(student.getClass().getSimpleName());
+		// If the Student is Postgrad, (Master) or (PHD) will be show
+		String gradType = student.getClass().getSimpleName();
+		if (student instanceof Postgrad) gradType += " (" + ((Postgrad) student).getDegree() + ")";
+		JLabel gradLabel = new JLabel(gradType);
 		gradLabel.setFont( gradLabel.getFont().deriveFont(16f));
 		gradLabel.setForeground(Color.GRAY);
 
@@ -183,6 +191,10 @@ public class AdmitPanel extends JPanel implements CardPanel {
 					Student s = AdmitPanel.this.currentStudent;
 					s.addUniversity(entry.getValue(), ACCEPT.equals(entry.getKey().getSelection().getActionCommand()));
 				}
+				
+				for (ChangeListener l : AdmitPanel.this.listeners) {
+					l.stateChanged(new ChangeEvent(this));
+				}
 			}
 			
 		});
@@ -207,7 +219,7 @@ public class AdmitPanel extends JPanel implements CardPanel {
 	 * @param students a List of Students who have been inputted into the system
 	 */
 	public void setStudents(List<Student> students) {
-
+		
 		// Update students variable
 		this.students = students;
 		
@@ -221,4 +233,13 @@ public class AdmitPanel extends JPanel implements CardPanel {
 		this.comboBox.setModel(new DefaultComboBoxModel<String>(studentNames));
 		
 	}
+
+	public List<Student> getStudents() {
+		return this.students;
+	}
+	
+	public void addListener(ChangeListener c) {
+		this.listeners.add(c);
+	}
+	
 }
