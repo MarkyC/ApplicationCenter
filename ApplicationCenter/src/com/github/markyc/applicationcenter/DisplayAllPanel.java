@@ -2,7 +2,6 @@ package com.github.markyc.applicationcenter;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -36,11 +35,15 @@ public class DisplayAllPanel extends JPanel implements CardPanel {
 		return CARD_NAME;
 	}
 
-	public void setStudents(List<Student> students) {
+	//public void setStudents(List<Student> students) {
+	public void setStudents(Student[] students, int numStudents) {
 		
 		// Create text out of Students in the List
 		String text = "";
-		for (Student s : students) text += s + "\n";
+		for ( int i = 0; i < numStudents; i++ ) {
+			Student s = students[i]; 
+			text += s + "\n";
+		}
 		
 		// Set the text of the field to the Students from the List
 		this.field.setText(text);

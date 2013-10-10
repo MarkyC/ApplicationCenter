@@ -5,7 +5,6 @@ package com.github.markyc.applicationcenter;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.HeadlessException;
-import java.util.List;
 
 import javax.swing.JApplet;
 import javax.swing.JPanel;
@@ -78,21 +77,22 @@ public class ApplicationCenter extends JApplet implements ChangeListener{
 		
 		if ( e.getSource() instanceof InputPanel ) {
 			
-			List<Student> students = ((InputPanel) e.getSource()).getStudents();
+			//List<Student> students = ((InputPanel) e.getSource()).getStudents();
+			Student[] students 	= ((InputPanel) e.getSource()).getStudents();
+			int numStudents 	= ((InputPanel) e.getSource()).getStudentsCount();
 			
-			// I really want to make these Objects implement a SetStudent interface, 
-			// but interfaces must be in their own file
-			
-			this.admitPanel.setStudents(students);
-			this.displayPanel.setStudents(students);
-			this.displayAllPanel.setStudents(students);
+			this.admitPanel.setStudents( 		students, numStudents);
+			this.displayPanel.setStudents( 		students, numStudents);
+			this.displayAllPanel.setStudents( 	students, numStudents);
 			
 		} else if ( e.getSource() instanceof AdmitPanel ) {
+						
+			//List<Student> students = ((AdmitPanel) e.getSource()).getStudents();
+			Student[] students 	= ((AdmitPanel) e.getSource()).getStudents();
+			int numStudents 	= ((AdmitPanel) e.getSource()).getStudentsCount();
 			
-			List<Student> students = ((AdmitPanel) e.getSource()).getStudents();
-			
-			this.displayPanel.setStudents(students);
-			this.displayAllPanel.setStudents(students);
+			this.displayPanel.setStudents(		students, numStudents);
+			this.displayAllPanel.setStudents(	students, numStudents);
 
 		}
 		

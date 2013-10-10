@@ -75,7 +75,9 @@ public class InputPanel extends JPanel implements CardPanel {
 	private JPanel contentPanel;
 
 	/** Holds all the students */
-	private List<Student> students;
+	//private List<Student> students;
+	private Student[] students; // Changed from a nice infinite List to an ugly finite array
+	private int numStudents;	// needed to keep track of the amount of Students
 	/**  This is used to grab the values from all the fields we wish to save when the user clicks submit */
 	private List<JComponent> fields;
 	/** Holds listeners that are added to the class */
@@ -86,15 +88,16 @@ public class InputPanel extends JPanel implements CardPanel {
 		super();
 		
 		/* Build panels, adding the JTextFields to the list of fields */
-		this.fields = new ArrayList<JComponent>();
-		this.students = new ArrayList<Student>();
-		this.listeners = new ArrayList<ChangeListener>();
-		this.contentPanel = this.createContentPanel();
+		this.fields 		= new ArrayList<JComponent>();
+		this.students 		= new Student[100]; //new ArrayList<Student>();
+		this.numStudents 	= 0;
+		this.listeners 		= new ArrayList<ChangeListener>();
+		this.contentPanel 	= this.createContentPanel();
 
 		/* Add a ScrollPane in case the view overflows */
 		JScrollPane scroll = new JScrollPane( this.contentPanel );
-		scroll.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), INPUT));
-		this.setLayout(new GridLayout( 1,1 ));
+		scroll.setBorder(BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder(), INPUT ));
+		this.setLayout(new GridLayout( 1, 1 ));
 		this.add(scroll);
 	}
 
@@ -139,7 +142,8 @@ public class InputPanel extends JPanel implements CardPanel {
 
 	private JPanel createSubmitPanel(String name) {
 		
-		JLabel label = new JLabel(this.students.size() + STUDENTS_CREATED);
+		//JLabel label = new JLabel(this.students.size() + STUDENTS_CREATED);
+		JLabel label = new JLabel(this.numStudents + STUDENTS_CREATED);
 		label.setName(name);
 		label.setPreferredSize(new Dimension( LABEL_WIDTH + FIELD_WIDTH, COMPONENT_HEIGHT ));
 		label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -235,12 +239,20 @@ public class InputPanel extends JPanel implements CardPanel {
 		// the selected item: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4133743
 		// I don't agree with this, because it forces all items in JComboBox to
 		// be unique, but c'est la vie.
-		for ( Student s : this.students ) 
+		//for ( Student s : this.students ) 
+		for ( int i = 0; i < this.numStudents; i++ ) {
+			Student s = this.students[i];
 			if ( s.getName().equals( student.getName() ) )
 				throw new IllegalArgumentException("There is already a student with this name in the system.");
+		}
 
 
-		this.students.add(student);
+		//this.students.add(student);
+		if ( this.numStudents < this.students.length ) {
+			this.students[numStudents++] = student;
+		} else {
+			throw new IllegalArgumentException("There are only 100 students allowed");
+		}
 		
 		for (ChangeListener l : this.listeners) {
 			l.stateChanged(new ChangeEvent(this));
@@ -251,11 +263,16 @@ public class InputPanel extends JPanel implements CardPanel {
 		this.listeners.add(c);
 	}
 	
-	public List<Student> getStudents() {
+	//public List<Student> getStudents() {
+	public Student[] getStudents() {
 		return this.students;
 	}
 	
-	public void setStudents(List<Student> students) {/* We don't set the Students of the InputPanel */}
+	public int getStudentsCount() {
+		return this.numStudents;
+	}
+	
+	public void setStudents(Student[] students, int numStudents) {/* We don't set the Students of the InputPanel */}
 
 	final static class DigitDecimalListener implements KeyListener {
 
@@ -301,8 +318,8 @@ public class InputPanel extends JPanel implements CardPanel {
 	    private int maxCount;
 
 	    private MaxIndexSelectionModel(JList<?> list, int maxCount) {
-	        this.list = list;
-	        this.maxCount = maxCount;
+	        this.list 		= list;
+	        this.maxCount 	= maxCount;
 	    }
 
 	    @Override
@@ -357,8 +374,7 @@ public class InputPanel extends JPanel implements CardPanel {
 		public void actionPerformed(ActionEvent e) {
 			
 			// iterate over fields to get the user inputted data
-			for (JComponent comp : InputPanel.this.fields) {
-				
+			for (JComponent comp : InputPanel.this.fields)
 				if (comp instanceof JTextField) {
 				// Name, program, marks of the Student
 					
@@ -423,7 +439,6 @@ public class InputPanel extends JPanel implements CardPanel {
 					
 					label = (JLabel) comp;
 				}
-			}
 			
 			// Create student based on provided info
 			Student s;
@@ -446,7 +461,8 @@ public class InputPanel extends JPanel implements CardPanel {
 			}
 			
 			// update label to reflect the new student
-			label.setText(InputPanel.this.students.size() + STUDENTS_CREATED);
+			//label.setText(InputPanel.this.students.size() + STUDENTS_CREATED);
+			label.setText(InputPanel.this.numStudents + STUDENTS_CREATED);
 		}
 				
 	}

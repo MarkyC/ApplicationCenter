@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,7 +23,9 @@ public class DisplayPanel extends JPanel implements CardPanel {
 	private JTextField searchField;
 	private JTextArea area;
 	
-	List<Student> students;
+	//List<Student> students;
+	private Student[] students;
+	private int numStudents;
 
 	
 	public DisplayPanel() {
@@ -41,11 +42,14 @@ public class DisplayPanel extends JPanel implements CardPanel {
 				if ( "".equals(name) ) return;	// Don't search for empty Student name
 				
 				// attempt to show the student, showing an empty ("please select a student...") panel on error
-				for (Student s : DisplayPanel.this.students)
+				for ( int i = 0; i < DisplayPanel.this.numStudents; i++ ) {
+					Student s = DisplayPanel.this.students[i];
 					if ( s.getName().equals( name ) ) {
 						DisplayPanel.this.showStudent( s );
 						return;
 					}
+				}
+					
 				
 				// If we get here there is no Student with that name
 				new ErrorDialog("No Student named " + name + " found");
@@ -74,9 +78,11 @@ public class DisplayPanel extends JPanel implements CardPanel {
 		return CARD_NAME;
 	}
 
-	public void setStudents(List<Student> students) {
+	//public void setStudents(List<Student> students) {
+	public void setStudents(Student[] students, int numStudents) {
 		
-		this.students = students;
+		this.students		= students;
+		this.numStudents 	= numStudents;
 	}
 
 }

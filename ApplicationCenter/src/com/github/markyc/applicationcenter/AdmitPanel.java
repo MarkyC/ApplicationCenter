@@ -45,13 +45,15 @@ public class AdmitPanel extends JPanel implements CardPanel {
 	
 	/* Combo box index is students index + 1 
 	 * because the first combobox item is "please select a student..." */
-	private List<Student> students;
+	//private List<Student> students;
+	private Student[] students;
+	private int numStudents;
+
 	private JComboBox<String> comboBox;
 	
 	private JPanel studentInfoPanel;
 	
 	Map<ButtonGroup, String> fields;
-	private Student currentStudent;
 	
 	private List<ChangeListener> listeners;
 	
@@ -59,11 +61,11 @@ public class AdmitPanel extends JPanel implements CardPanel {
 	public AdmitPanel() {
 		super();
 		
-		this.students 	= new ArrayList<Student>();
-		this.fields 	= new HashMap<ButtonGroup, String>();
-		this.listeners	= new ArrayList<ChangeListener>();
+		this.students 		= new Student[100];//new ArrayList<Student>();
+		this.fields 		= new HashMap<ButtonGroup, String>();
+		this.listeners		= new ArrayList<ChangeListener>();
 		
-		this.comboBox 	= new JComboBox<String>(NO_STUDENTS);
+		this.comboBox 		= new JComboBox<String>(NO_STUDENTS);
 		this.comboBox.addActionListener(new ActionListener() {
 
 			@Override
@@ -72,7 +74,8 @@ public class AdmitPanel extends JPanel implements CardPanel {
 				
 				// attempt to show the student, showing an empty ("please select a student...") panel on error
 				try {
-					AdmitPanel.this.showStudent(students.get( box.getSelectedIndex() - 1 ));
+					//AdmitPanel.this.showStudent(students.get( box.getSelectedIndex() - 1 ));
+					AdmitPanel.this.showStudent( box.getSelectedIndex() - 1 );
 				} catch (Exception ex) {
 					AdmitPanel.this.createEmptyInfoPanel();
 				}
@@ -107,10 +110,12 @@ public class AdmitPanel extends JPanel implements CardPanel {
 		return this.studentInfoPanel;
 	}
 	
-	private void showStudent(Student student) {
+	private void showStudent(int index) {
 		
-		this.currentStudent = student;
+		final Student student = this.students[index];
 		
+		// remove all previous entries in the fields list
+		this.fields.clear();
 		// Remove all previous Components from the panel
 		this.studentInfoPanel.removeAll();
 		this.studentInfoPanel.setLayout(new BorderLayout());
@@ -190,12 +195,13 @@ public class AdmitPanel extends JPanel implements CardPanel {
 					Entry<ButtonGroup, String> entry = it.next();
 					entry.getKey().getSelection().getActionCommand();
 					
-					Student s = AdmitPanel.this.currentStudent;
-					s.addUniversity(entry.getValue(), ACCEPT.equals(entry.getKey().getSelection().getActionCommand()));
+					student.addUniversity(entry.getValue(), ACCEPT.equals(entry.getKey().getSelection().getActionCommand()));
+					//AdmitPanel.this.students[ AdmitPanel.this.currentStudent ] = s;
+
 				}
 				
 				for (ChangeListener l : AdmitPanel.this.listeners) {
-					l.stateChanged(new ChangeEvent(this));
+					l.stateChanged(new ChangeEvent( AdmitPanel.this ));
 				}
 			}
 			
@@ -220,24 +226,34 @@ public class AdmitPanel extends JPanel implements CardPanel {
 	 * Sets the Students this panel contains 
 	 * @param students a List of Students who have been inputted into the system
 	 */
-	public void setStudents(List<Student> students) {
+	//public void setStudents(List<Student> students) {
+	public void setStudents(Student[] students, int numStudents) {
 		
 		// Update students variable
-		this.students = students;
+		this.students 		= students;
+		this.numStudents 	= numStudents;
 		
 		// get names of all students and store in a string array
 		// The first combobox item is helper text asking the user to select a Student
-		String studentNames[] = new String[this.students.size() + 1];
+		String studentNames[] = new String[ numStudents + 1 ]; //new String[this.students.size() + 1];
 		studentNames[0] = SELECT_STUDENT;
-		for ( int i = 1; i < studentNames.length; i++ ) studentNames[i] = this.students.get(i-1).getName();
+		//for ( int i = 1; i < studentNames.length; i++ ) studentNames[i] = this.students.get(i-1).getName();
+		for ( int i = 1; i <= numStudents; i++ ) {
+			studentNames[i] = this.students[ i - 1 ].getName();
+		}
 		
 		// Set model for the combobox to be the students names
 		this.comboBox.setModel(new DefaultComboBoxModel<String>(studentNames));
 		
 	}
 
-	public List<Student> getStudents() {
+	//public List<Student> getStudents() {
+	public Student[] getStudents() {
 		return this.students;
+	}
+	
+	public int getStudentsCount() {
+		return this.numStudents;
 	}
 	
 	public void addListener(ChangeListener c) {
