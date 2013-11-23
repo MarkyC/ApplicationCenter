@@ -79,20 +79,18 @@ public class ApplicationCenter extends JApplet implements ChangeListener{
 			
 			//List<Student> students = ((InputPanel) e.getSource()).getStudents();
 			Student[] students 	= ((InputPanel) e.getSource()).getStudents();
-			int numStudents 	= ((InputPanel) e.getSource()).getStudentsCount();
 			
-			this.admitPanel.setStudents( 		students, numStudents);
-			this.displayPanel.setStudents( 		students, numStudents);
-			this.displayAllPanel.setStudents( 	students, numStudents);
+			this.admitPanel.setStudents( 		students);
+			this.displayPanel.setStudents( 		students);
+			this.displayAllPanel.setStudents( 	students);
 			
 		} else if ( e.getSource() instanceof AdmitPanel ) {
 						
 			//List<Student> students = ((AdmitPanel) e.getSource()).getStudents();
 			Student[] students 	= ((AdmitPanel) e.getSource()).getStudents();
-			int numStudents 	= ((AdmitPanel) e.getSource()).getStudentsCount();
 			
-			this.displayPanel.setStudents(		students, numStudents);
-			this.displayAllPanel.setStudents(	students, numStudents);
+			this.displayPanel.setStudents(		students);
+			this.displayAllPanel.setStudents(	students);
 
 		}
 		

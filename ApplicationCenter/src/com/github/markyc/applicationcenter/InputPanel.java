@@ -39,7 +39,7 @@ public class InputPanel extends JPanel implements CardPanel {
 	private static final String UNIVERSITY 	= "Universities: ";
 	private static final String SUBMIT 		= "Submit";
 
-	private static final String STUDENTS_CREATED = " Students have been created";
+	private static final String STUDENTS_CREATED = " Students have been created out of 100.";
 	
 	/* Errors */
 	private static final String NO_NAME = "Your name cannot be empty";
@@ -267,17 +267,14 @@ public class InputPanel extends JPanel implements CardPanel {
 	//public List<Student> getStudents() {
 	public Student[] getStudents() {
 		
-		int lastStudent = 0;
-		while (students[lastStudent] != null) lastStudent++;
-		
-		return Arrays.copyOf(students, lastStudent);
+		return Arrays.copyOf(students, this.numStudents);
 	}
 	
-	public int getStudentsCount() {
+	/*public int getStudentsCount() {
 		return this.numStudents;
-	}
+	}*/
 	
-	public void setStudents(Student[] students, int numStudents) {/* We don't set the Students of the InputPanel */}
+	public void setStudents(Student[] students) {/* We don't set the Students of the InputPanel */}
 
 	final static class DigitDecimalListener implements KeyListener {
 
@@ -419,12 +416,16 @@ public class InputPanel extends JPanel implements CardPanel {
 					
 					}
 					
+					f.setText(""); 	// empty fields
+					
 				} else if (comp instanceof JComboBox<?>) {
 				// Degree the Student is obtaining
 					
 					@SuppressWarnings("unchecked")
 					JComboBox<String> box = (JComboBox<String>) comp;
 					degree 	= (String) box.getSelectedItem();
+					
+					box.setSelectedIndex(0); // reset combobox
 					
 				} else if ( comp instanceof JList<?> ) {
 				// Student university selection	
@@ -438,6 +439,8 @@ public class InputPanel extends JPanel implements CardPanel {
 						new ErrorDialog( NO_UNIVERSITIES );
 						return;
 					}
+					
+					l.setSelectedIndex(0); 	// reset list selection
 					
 				} else if ( comp instanceof JLabel ) {
 				// Updates the amount of Students in the List

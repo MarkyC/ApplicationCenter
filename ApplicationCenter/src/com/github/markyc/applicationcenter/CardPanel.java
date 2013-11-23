@@ -8,5 +8,5 @@ public interface CardPanel {
 	public String getCardName();
 	
 	//public void setStudents(List<Student> students);
-	public void setStudents(Student[] students, int numStudents);
+	public void setStudents(Student[] students);
 }

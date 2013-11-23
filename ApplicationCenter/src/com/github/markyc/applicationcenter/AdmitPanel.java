@@ -47,7 +47,6 @@ public class AdmitPanel extends JPanel implements CardPanel {
 	 * because the first combobox item is "please select a student..." */
 	//private List<Student> students;
 	private Student[] students;
-	private int numStudents;
 
 	private JComboBox<String> comboBox;
 	
@@ -230,18 +229,17 @@ public class AdmitPanel extends JPanel implements CardPanel {
 	 * @param students a List of Students who have been inputted into the system
 	 */
 	//public void setStudents(List<Student> students) {
-	public void setStudents(Student[] students, int numStudents) {
+	public void setStudents(Student[] students) {
 		
 		// Update students variable
 		this.students 		= students;
-		this.numStudents 	= numStudents;
 		
 		// get names of all students and store in a string array
 		// The first combobox item is helper text asking the user to select a Student
-		String studentNames[] = new String[ numStudents + 1 ]; //new String[this.students.size() + 1];
+		String studentNames[] = new String[ this.students.length + 1 ]; //new String[this.students.size() + 1];
 		studentNames[0] = SELECT_STUDENT;
 		//for ( int i = 1; i < studentNames.length; i++ ) studentNames[i] = this.students.get(i-1).getName();
-		for ( int i = 1; i <= numStudents; i++ ) {
+		for ( int i = 1; i <= this.students.length; i++ ) {
 			studentNames[i] = this.students[ i - 1 ].getName();
 		}
 		
@@ -252,11 +250,8 @@ public class AdmitPanel extends JPanel implements CardPanel {
 
 	//public List<Student> getStudents() {
 	public Student[] getStudents() {
+		
 		return this.students;
-	}
-	
-	public int getStudentsCount() {
-		return this.numStudents;
 	}
 	
 	public void addListener(ChangeListener c) {

@@ -2,6 +2,7 @@ package com.github.markyc.applicationcenter;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.util.Arrays;
 import java.util.Comparator;
 
 import javax.swing.JPanel;
@@ -37,18 +38,18 @@ public class DisplayAllPanel extends JPanel implements CardPanel {
 	}
 
 	//public void setStudents(List<Student> students) {
-	public void setStudents(Student[] students, int numStudents) {
+	public void setStudents(Student[] students) {
 		
-		// BubbleSort is a static inner class
-		if (numStudents > 1) {
-			students = BubbleSort.sort(students, Student.AverageComparator);
+		Student[] sorted = Arrays.copyOf(students, students.length);
+		if (sorted.length > 1) {
+			// BubbleSort is a static inner class
+			sorted = BubbleSort.sort(sorted, Student.AverageComparator);
 		}
 		
 		// Create text out of Students in the List
 		String text = "";
-		for ( int i = 0; i < numStudents; i++ ) {
-			Student s = students[i]; 
-			text += s + "\n";
+		for ( int i = 0; i < sorted.length; i++ ) {
+			text += sorted[i] + "\n";
 		}
 		
 		// Set the text of the field to the Students from the List
