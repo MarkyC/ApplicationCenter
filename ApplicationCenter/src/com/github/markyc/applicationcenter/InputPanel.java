@@ -8,6 +8,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -265,7 +266,11 @@ public class InputPanel extends JPanel implements CardPanel {
 	
 	//public List<Student> getStudents() {
 	public Student[] getStudents() {
-		return this.students;
+		
+		int lastStudent = 0;
+		while (students[lastStudent] != null) lastStudent++;
+		
+		return Arrays.copyOf(students, lastStudent);
 	}
 	
 	public int getStudentsCount() {
@@ -450,7 +455,7 @@ public class InputPanel extends JPanel implements CardPanel {
 			
 			// add selected universities
 			for (String uni : universities)
-				if ( !s.hasUniversity(uni) ) s.addUniversity(uni);
+				s.addUniversity(uni); //if ( !s.hasUniversity(uni) ) s.addUniversity(uni);
 			
 			// add to list
 			try {

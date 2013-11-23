@@ -40,7 +40,9 @@ public class DisplayAllPanel extends JPanel implements CardPanel {
 	public void setStudents(Student[] students, int numStudents) {
 		
 		// BubbleSort is a static inner class
-		Student[] s1 = BubbleSort.sort(students, Student.AverageComparator);
+		if (numStudents > 1) {
+			students = BubbleSort.sort(students, Student.AverageComparator);
+		}
 		
 		// Create text out of Students in the List
 		String text = "";

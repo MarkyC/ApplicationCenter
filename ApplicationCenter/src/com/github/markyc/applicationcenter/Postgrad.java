@@ -1,7 +1,5 @@
 package com.github.markyc.applicationcenter;
 
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 public class Postgrad extends Student {
 	
@@ -10,28 +8,19 @@ public class Postgrad extends Student {
 	public static final String PHD = "PHD";
 	
 	private String degree;
-	private double undergradAverage;
-	
-	public Postgrad(Student student, String undergradMajor, double undergradAverage) {
-		
-		// create from an existing Student
-		this( student.getName(), student.getProgram(), undergradMajor, undergradAverage );
-		this.setUniversities( student.getUniversities() );
-	}
 
-	public Postgrad(String name, String program, String degree, double undergradAverage) {
-		super(name, program);
+	public Postgrad(String name, String program, String degree, double average) {
+		super(name, program, average);
 
 		this.degree = degree;
-		this.undergradAverage = undergradAverage;
 	}
 	
 	@Override
 	public void addUniversity(String name) {
 		if (PHD.equals( this.degree ))
-			this.addUniversity(name, undergradAverage >= 80);
+			this.addUniversity(name, getAverage() >= 80);
 		else if (MASTER.equals( this.degree )) {
-			this.addUniversity(name, undergradAverage >= 70);
+			this.addUniversity(name, getAverage() >= 70);
 		}
 	}
 	
@@ -48,40 +37,24 @@ public class Postgrad extends Student {
 	public void setDegree(String degree) {
 		this.degree = degree;
 	}
-
-	/**
-	 * @return the undergradAverage
-	 */
-	public double getUndergradAverage() {
-		return undergradAverage;
-	}
-
-	/**
-	 * @param undergradAverage the undergradAverage to set
-	 */
-	public void setUndergradAverage(double undergradAverage) {
-		this.undergradAverage = undergradAverage;
-	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		String result = "Postgrad [" + "name=" + getName() + ", program=" + getProgram() + 
-				", degree=" + degree + ", undergradAverage=" + undergradAverage + ", universities=[";
+		String result =  getName() + ", average=" + getAverage() 
+				+ ", " + getProgram() + ", " + getDegree() + ", ";
 		
-		// Add universities in String format
-		Iterator<Entry<String, Boolean>> it = this.universities.entrySet().iterator();
-		while (it.hasNext()) {
-			
-			Entry<String, Boolean> entry = it.next();
-			result += entry.getKey() + ": " + (entry.getValue() ? "accepted" : "rejected");
-			if ( it.hasNext() ) result += ", ";
-		}
-		
-		result += "]]";
+		if (this.universityOne != null) 
+			result += this.universityOne + "-" + (this.universityOneAccept ? "admitted" : "rejected") ;
+		if (this.universityTwo != null) 
+			result += ", " + this.universityTwo + "-" + (this.universityTwoAccept ? "admitted" : "rejected") ;
+		if (this.universityThree != null) 
+			result += ", " + this.universityThree + "-" + (this.universityThreeAccept ? "admitted" : "rejected") ;
 		
 		return result;
-	}
+	}	
+	
+
 }

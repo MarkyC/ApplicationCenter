@@ -148,11 +148,14 @@ public class AdmitPanel extends JPanel implements CardPanel {
 		JPanel universityPanel = new JPanel();
 		universityPanel.setLayout(new GridLayout(3,1));
 		
-		Iterator<String> it = student.getUniversities().keySet().iterator();
-		while (it.hasNext()) {
+		/*Iterator<String> it = student.getUniversities().keySet().iterator();
+		while (it.hasNext()) {*/
+		
+		String[] universities = student.getUniversities();
+		for (int i = 0; i < universities.length; i++) {
 			
-			String university = it.next();
-			boolean accepted = student.getUniversities().get(university);
+			String university = universities[i];//it.next();
+			boolean accepted = student.getUniversitiesAccept()[i]; //student.getUniversities().get(university);
 			
 			JPanel p = new JPanel();
 			p.setBorder(BorderFactory.createTitledBorder(
