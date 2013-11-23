@@ -2,6 +2,7 @@ package com.github.markyc.applicationcenter;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.util.Comparator;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -38,6 +39,9 @@ public class DisplayAllPanel extends JPanel implements CardPanel {
 	//public void setStudents(List<Student> students) {
 	public void setStudents(Student[] students, int numStudents) {
 		
+		// BubbleSort is a static inner class
+		Student[] s1 = BubbleSort.sort(students, Student.AverageComparator);
+		
 		// Create text out of Students in the List
 		String text = "";
 		for ( int i = 0; i < numStudents; i++ ) {
@@ -51,6 +55,25 @@ public class DisplayAllPanel extends JPanel implements CardPanel {
 		// Call for redraw
 		this.revalidate();
 		this.repaint(); 
+	}
+	
+	public static class BubbleSort {
+		public static <T> T[] sort(T[] objs, Comparator<T> compare) {
+			T[] result = objs;
+			
+			for (int i = 0; i < result.length; i++) {
+				for (int j = 0; j < result.length; j++) {
+					
+					if (compare.compare( result[i], result[j] ) > 0) {
+						T temp = result[i];
+						result[i] = result[j];
+						result[j] = temp;
+					} 
+				}
+			}
+			
+			return result;
+		}
 	}
 
 }
